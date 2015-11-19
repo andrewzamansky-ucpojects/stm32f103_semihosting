@@ -1,0 +1,17 @@
+INCLUDE_THIS_COMPONENT := YES 
+
+INCLUDE_DIR += $(EXTERNAL_SOURCE_ROOT_DIR)/ST/STM32F10x_StdPeriph_Driver/inc
+
+#DEFINES = 
+
+#CFLAGS = 
+
+#ASMFLAGS =  
+
+
+
+SRC = main.c
+
+VPATH = src
+
+include $(COMMON_CC)
