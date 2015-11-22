@@ -64,12 +64,13 @@ CONFIG_INCLUDE_NVIC = YES
 #CONFIG_INCLUDE_ADC = YES
 CONFIG_INCLUDE_INTERNAL_FLASH = YES
 
+CONFIG_INCLUDE_STD_LIBRARIES = libc_nano.a
 
 
 ######################################
 #####   misc configs  #####  
 
-CONFIG_OUTPUT_NAME 						= semihost_loader#if not used then name is 'out'
+CONFIG_OUTPUT_NAME 						= semihosting_loader_stm32#if not used then name is 'out'
 CONFIG_CPU_TYPE  						= cortex-m3#{cortex-a9,arm926ej-s,cortex-m3,stm8}
 CONFIG_USE_COMPILER 					= ARM-NONE-EABI-GCC#{ARM-NONE-EABI-GCC,ARMCC,CXSTM8}
 CONFIG_GCC_COMPILER_VERSION				= 4.9.3#{4.9.2,4.9.3}

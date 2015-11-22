@@ -8,9 +8,11 @@
 
 /***************   includes    *******************/
 
-#include "global_typedefs.h"
+#include "_project_typedefs.h"
+#include "_project_defines.h"
+#include "_project_func_declarations.h"
 
-//#include "UART_API.h"
+#include "PRINTF_api.h"
 #include "ARM_api.h"
 
 #include "FLASH_api.h"
@@ -57,21 +59,6 @@ extern uint32_t  __RAM_START__ ;
 
 extern void do_software_interrupt_asm(void);
 
-/* function : NVIC_APP_Init
- *
- *
- *
- */
-void	NVIC_APP_Init(void)
-{
-	NVIC_API_Init((uint32_t)NVIC_hal_RAM_Start);
-	//NVIC_API_RegisterInt(NVIC_API_Int_SVCall , vPortSVCHandler);
-	NVIC_API_RegisterInt(NVIC_API_Int_SVCall , do_software_interrupt_asm);
-//	NVIC_API_RegisterInt(NVIC_API_Int_PendSV , xPortPendSVHandler);
-//	NVIC_API_RegisterInt(NVIC_API_Int_SysTick , xPortSysTickHandler);
-
-
-}
 
 //pdev_descriptor semihosting_dev;
 
@@ -109,7 +96,7 @@ static void prvSetupHardware( void )
 
 	printf_init();
 
-	NVIC_APP_Init();
+	NVIC_API_Init();
 
 }
 
