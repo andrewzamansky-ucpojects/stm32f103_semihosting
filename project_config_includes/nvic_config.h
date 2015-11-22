@@ -18,7 +18,7 @@
 #include "stm32f10x.h"
 
 #define NVIC_CONFIG_START_OF_RAM	CONFIG_RAM_START_ADDR
-#define __CHECK_DEVICE_DEFINES
+//#define __CHECK_DEVICE_DEFINES
 //#define __CMSIS_GENERIC
 
 #if 0 // already defined in stm32f10x.h

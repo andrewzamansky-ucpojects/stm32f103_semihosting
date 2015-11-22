@@ -18,7 +18,6 @@ GLOBAL_PROJECT_SPECIFIC_LDFLAGS +=
 #####   global defines :  #########
 GLOBAL_DEFINES += NDEBUG #to disable  assert() macro
 GLOBAL_DEFINES += STM32F10X_MD USE_STM3210B_EVAL 
-GLOBAL_DEFINES += BINARY_FILE="$(APP_ROOT_DIR)/binaries_to_load/out.bin"
 ##########################################
 #####   global include files path :  #####   
 #GLOBAL_INCLUDE_DIR +=  
@@ -64,12 +63,12 @@ CONFIG_INCLUDE_NVIC = YES
 #CONFIG_INCLUDE_ADC = YES
 CONFIG_INCLUDE_INTERNAL_FLASH = YES
 
-
+CONFIG_INCLUDE_STD_LIBRARIES = libc_nano.a
 
 ######################################
 #####   misc configs  #####  
 
-CONFIG_OUTPUT_NAME 						= semihost_loader#if not used then name is 'out'
+CONFIG_OUTPUT_NAME 						= semihosting_loader_stm32#if not used then name is 'out'
 CONFIG_CPU_TYPE  						= cortex-m3#{cortex-a9,arm926ej-s,cortex-m3,stm8}
 CONFIG_USE_COMPILER 					= ARM-NONE-EABI-GCC#{ARM-NONE-EABI-GCC,ARMCC,CXSTM8}
 CONFIG_GCC_COMPILER_VERSION				= 4.9.3#{4.9.2,4.9.3}
