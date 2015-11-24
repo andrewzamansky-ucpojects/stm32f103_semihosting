@@ -24,14 +24,15 @@
 
 #define BUFFER_SIZE   2048
 
+#define VECTOR_TABLE_RESET_ENTRY	4
+#define SECONDARY_ROM_VECTOR_TABLE_RESET_WITH_SEMIHOSTING_ENTRY_OFFSET		8
 
 /***************   typedefs    *******************/
 
 
 /**********   external variables    **************/
-extern int __FLASH_START__;
-extern int __APP_START_ON_FLASH_ADDR__;
-extern int __APP_ENTRY_ADDR__;
+extern int __FLASH_START__; // defined in linker file
+
 extern int smihosting_is_active;
 
 extern void	NVIC_APP_Init(void)  ;
@@ -54,8 +55,6 @@ pdev_descriptor_const semihosting_dev = &sh_dev;
 uint8_t buff[BUFFER_SIZE];
 
 
-extern uint32_t  __RAM_START__ ;
-#define NVIC_hal_RAM_Start			(&__RAM_START__) // defined in linker file
 
 extern void do_software_interrupt_asm(void);
 
@@ -109,7 +108,8 @@ typedef struct
 image_t images[]={
 //		{"C:\\Work\\Booter_share\\booter.bin", (uint32_t)&__FLASH_START__},
 //		{"C:\\Work\\Booter_share\\out.bin"	 , (uint32_t)&__APP_START_ON_FLASH_ADDR__}
-		{"/tmp/out.bin"	 , (uint32_t)&__APP_START_ON_FLASH_ADDR__}
+		{"/tmp/out.bin"	 , (uint32_t)&__FLASH_START__},
+		{"c:/Temp/out.bin"	 , (uint32_t)&__FLASH_START__}
 };
 
 /*
@@ -120,23 +120,24 @@ int main(void)
 {
 	uint32_t i,prog_addr,fileHandle,file_size,read_size,total_read_size;
 	uint32_t *pAppAddr __attribute__((unused));
+	uint8_t valid_file_found = 0;
 
 	prvSetupHardware();
 
-	pAppAddr = (uint32_t *)(&__APP_ENTRY_ADDR__);
 
 	for(i=0 ; i < (sizeof(images)/sizeof(image_t)) ; i++)
 	{
-		PRINTF_DBG("programming %s ...\n",images[i].file_name);
 		prog_addr=images[i].address;
 		total_read_size=0;
 		fileHandle=ARM_API_SH_Open(images[i].file_name,1);// rb - read,binary
 		if ((fileHandle == 0 ) || (fileHandle == -1 ))
 		{
-			PRINT_STR_DBG("open fail\n");
+			PRINTF_DBG("file not found : %s  \n",images[i].file_name);
 		}
 		else
 		{
+			PRINTF_DBG("programming %s ...\n",images[i].file_name);
+			valid_file_found = 1 ;
 			file_size=ARM_API_SH_GetFileLength(fileHandle);
 			FLASH_API_StartProgramming(prog_addr , file_size);
 			while (BUFFER_SIZE > (read_size=ARM_API_SH_Read(fileHandle,buff,BUFFER_SIZE)))
@@ -153,19 +154,22 @@ int main(void)
 		}
 	}
 
-	pAppAddr=(uint32_t *)(((uint32_t)pAppAddr)+8); // activate semihosting
+
+	if(1 == valid_file_found)
+	{
+		pAppAddr = (uint32_t *)*((uint32_t *)((uint32_t)&__FLASH_START__ + VECTOR_TABLE_RESET_ENTRY));
+		pAppAddr=(uint32_t *)(((uint32_t)pAppAddr) + SECONDARY_ROM_VECTOR_TABLE_RESET_WITH_SEMIHOSTING_ENTRY_OFFSET);
+		PRINTF_DBG("jumping to 0x%x ...\n",pAppAddr);
+
+		// jump to application
+		asm volatile(	"ldr r0,%[addr] \n"
+	    				"orr r0,r0,#0x01 \n"
+	    				"bx r0 \n"
+	    				: :[addr]"m"(pAppAddr):"memory");
+	}
+
 
 	while(1);
-	// jump to application
-	asm volatile(	"ldr r0,%[addr] \n"
-    				"orr r0,r0,#0x01 \n"
-    				"bx r0 \n"
-    				: :[addr]"m"(pAppAddr):"memory");
-
-	while(1)
-	{
-
-	}
 }
 
 
