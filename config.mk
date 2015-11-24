@@ -18,7 +18,6 @@ GLOBAL_PROJECT_SPECIFIC_LDFLAGS +=
 #####   global defines :  #########
 GLOBAL_DEFINES += NDEBUG #to disable  assert() macro
 GLOBAL_DEFINES += STM32F10X_MD USE_STM3210B_EVAL 
-GLOBAL_DEFINES += BINARY_FILE="$(APP_ROOT_DIR)/binaries_to_load/out.bin"
 ##########################################
 #####   global include files path :  #####   
 #GLOBAL_INCLUDE_DIR +=  
